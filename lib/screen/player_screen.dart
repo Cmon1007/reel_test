@@ -18,6 +18,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void initState() {
     _controllers = VideoPlayerController.network(widget.videoUrl);
     _chewieControllers = ChewieController(
+      aspectRatio: 16 / 16,
       videoPlayerController: _controllers,
       autoPlay: true,
       looping: true,

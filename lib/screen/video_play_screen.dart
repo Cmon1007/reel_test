@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shorts_video_player/domain/model/new_model.dart';
 import 'package:shorts_video_player/screen/player_screen.dart';
+import 'package:shorts_video_player/widget/like_button_widget.dart';
 
 class VideoPlayScreen extends StatefulWidget {
   const VideoPlayScreen({super.key});
@@ -40,12 +41,119 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
         elevation: 0,
         backgroundColor: Colors.black,
       ),
+      backgroundColor: Colors.black,
       body: PageView.builder(
         scrollDirection: Axis.vertical,
-        itemCount: 5,
+        itemCount: movies.length,
         itemBuilder: (context, index) {
           final movie = movies[index];
-          return PlayerScreen(videoUrl: movie.sources[0]);
+          return Stack(children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                AspectRatio(
+                    aspectRatio: 14 / 16,
+                    child: PlayerScreen(videoUrl: movie.sources[0])),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Image.network(
+                              movie.thumb,
+                              fit: BoxFit.cover,
+                              height: 50,
+                              width: 50,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            "${movie.title}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Positioned(
+                bottom: 0,
+                top: 300,
+                right: 0,
+                child: Container(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            LikeButtonWidet(isLiked: false),
+                            Text(
+                              "Likes",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.comment,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "Comment",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/images/share.png",
+                              height: 30,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "Share",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ]);
         },
       ),
     );
