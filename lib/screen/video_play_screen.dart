@@ -36,11 +36,6 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Video Player"),
-        elevation: 0,
-        backgroundColor: Colors.black,
-      ),
       backgroundColor: Colors.black,
       body: PageView.builder(
         scrollDirection: Axis.vertical,
@@ -57,6 +52,9 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                 AspectRatio(
                     aspectRatio: 14 / 16,
                     child: PlayerScreen(videoUrl: movie.sources[0])),
+                SizedBox(
+                  height: 60,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -95,7 +93,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
             ),
             Positioned(
                 bottom: 0,
-                top: 300,
+                top: 320,
                 right: 0,
                 child: Container(
                   child: Column(
