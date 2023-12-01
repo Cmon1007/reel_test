@@ -18,13 +18,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     _chewieControllers = ChewieController(
-        aspectRatio: 16 / 16,
+        aspectRatio: 14 / 16,
         videoPlayerController: widget.videoController,
         autoPlay: true,
         looping: true,
         allowFullScreen: false,
         showOptions: false,
-        showControlsOnInitialize: false);
+        showControlsOnInitialize: false,
+        allowMuting: true);
     widget.videoController.addListener(videControllerListener);
 
     super.initState();

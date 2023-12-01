@@ -17,10 +17,14 @@ class VideoPlayScreen extends StatefulWidget {
 class _VideoPlayScreenState extends State<VideoPlayScreen> {
   List<Movie> movies = [];
   List<VideoPlayerController> _videoControllers = [];
+  PageController _pageController = PageController();
   Future<void> _loadMovies() async {
     String jsonString = await rootBundle.loadString('assets/json/api.json');
     List<dynamic> movieList = json.decode(jsonString);
-
+    _videoControllers.forEach((controller) {
+      controller.pause();
+      controller.dispose();
+    });
     setState(() {
       movies = List<Map<String, dynamic>>.from(movieList[0]['videos'])
           .map((json) => Movie.fromJson(json))
@@ -29,6 +33,13 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
           .map((movie) => VideoPlayerController.network(movie.sources[0]))
           .toList();
     });
+    _videoControllers.forEach((controller) async {
+      await controller.initialize();
+      controller.setVolume(1.0);
+    });
+    if (_videoControllers.isNotEmpty) {
+      _videoControllers[0].play();
+    }
   }
 
   @override
