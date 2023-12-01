@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:shorts_video_player/domain/model/new_model.dart';
 import 'package:shorts_video_player/screen/player_screen.dart';
 import 'package:shorts_video_player/widget/like_button_widget.dart';
+import 'package:video_player/video_player.dart';
 
 class VideoPlayScreen extends StatefulWidget {
   const VideoPlayScreen({super.key});
@@ -15,7 +16,7 @@ class VideoPlayScreen extends StatefulWidget {
 
 class _VideoPlayScreenState extends State<VideoPlayScreen> {
   List<Movie> movies = [];
-
+  List<VideoPlayerController> _videoControllers = [];
   Future<void> _loadMovies() async {
     String jsonString = await rootBundle.loadString('assets/json/api.json');
     List<dynamic> movieList = json.decode(jsonString);
@@ -24,13 +25,24 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
       movies = List<Map<String, dynamic>>.from(movieList[0]['videos'])
           .map((json) => Movie.fromJson(json))
           .toList();
+      _videoControllers = movies
+          .map((movie) => VideoPlayerController.network(movie.sources[0]))
+          .toList();
     });
   }
 
   @override
   void initState() {
     _loadMovies();
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _videoControllers.forEach((controller) => controller.dispose());
+    super.dispose();
   }
 
   @override
@@ -42,6 +54,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
         itemCount: movies.length,
         itemBuilder: (context, index) {
           final movie = movies[index];
+          final videoController = _videoControllers[index];
           return Stack(children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +64,7 @@ class _VideoPlayScreenState extends State<VideoPlayScreen> {
                 ),
                 AspectRatio(
                     aspectRatio: 14 / 16,
-                    child: PlayerScreen(videoUrl: movie.sources[0])),
+                    child: PlayerScreen(videoController: videoController)),
                 SizedBox(
                   height: 60,
                 ),
